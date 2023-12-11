@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="DESCRIPTION META TAG">
+  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG" />
+  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG TAG" />
+  <meta property="og:url" content="URL OF THE WEBSITE" />
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/image/your_banner_image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+
+  <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
+  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="KEYWORDS SHOULD BE PLACED HERE">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>AVID: Any-Length Video Inpainting with Diffusion Model</title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+</head>
+
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">AVID: <u>A</u>ny-Length <u>V</u>ideo <u>I</u>npainting with
+            <u>D</u>iffusion Model</h1>
+          <div class="is-size-5 publication-authors">
+            <!-- Paper authors -->
+            <span class="author-block">
+              <a href="https://zhang-zx.github.io/" target="_blank">Zhixing Zhang</a><sup>1,*</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=K3QJPdMAAAAJ&hl" target="_blank">Bichen
+                Wu</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://xiaoyan.horizonian.com/" target="_blank">Xiaoyan Wang</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=be4sU3cAAAAJ" target="_blank">Yaqiao Luo</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://lucinezhang.github.io/" target="_blank">Luxin Zhang</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://yinan-zhao.github.io/" target="_blank">Yinan Zhao</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://sites.google.com/site/vajdap" target="_blank">Peter Vajda</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://people.cs.rutgers.edu/~dnm/" target="_blank">Dimitris Metaxas</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://lichengunc.github.io/" target="_blank">Licheng Yu</a><sup>2</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Rutgers University,</span>
+            <span class="author-block"><sup>2</sup>Meta AI</span>
+            <span class="eql-cntrb"><small><br><sup>*</sup>Work done during an internship at Meta AI.</small></span>
+          </div>
+          
+          <div class="column has-text-centered">
+            <div class="publication-links">
+
+              <!-- ArXiv Link -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2312.03816" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+
+              <!-- Github link -->
+              <span class="link-block">
+                <a href="https://github.com/zhang-zx/AVID" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                <a href="./supp/index.html" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fas fa-link"></i>
+                  </span>
+                  <span>Supplementary</span>
+                </a>
+              </span>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- Teaser image-->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+            <div class="content has-text-centered">
+              <img src="pics/teaser.png" alt="" width="100%" />
+              <div style="font-size: 20px; text-align: center;">Video inpainting on videos of various durations.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- End teaser image -->
+
+  <!-- Paper abstract -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Recent advances in diffusion models have successfully enabled text-guided image inpainting.
+              While it seems straightforward to extend such editing capability into video domain,
+              there has been fewer works regarding text-guided video inpainting.
+              Given a video, a masked region at its initial frame, and an editing prompt,
+              it requires a model to do infilling at each frame following the editing guidance while keeping the
+              out-of-mask region intact.
+              There are three main challenges in text-guided video inpainting:
+              (<b>i</b>) temporal consistency of the edited video,
+              (<b>ii</b>) supporting different inpainting types at different structural fidelity level,
+              and (<b>iii</b>) dealing with variable video length.
+              To address these challenges, we introduce Any-Length Video Inpainting with Diffusion Model, dubbed as
+              AVID.
+              At its core, our model is equipped with effective motion modules and adjustable structure guidance, for
+              fixed-length video inpainting.
+              Building on top of that, we propose a novel Temporal MultiDiffusion sampling pipeline with an middle-frame
+              attention guidance mechanism,
+              facilitating the generation of videos with any desired duration.
+              Our comprehensive experiments show our model can robustly deal with various inpainting types at different
+              video duration range,
+              with high quality.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- End paper abstract -->
+
+  <!-- Paper poster -->
+  <section class="hero is-small">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-">
+            <h2 class="title is-3">Method</h2>
+            <div class="content has-text-justified">
+              <table width="90%" border="0">
+                <tbody>
+                  <tr>
+                    <td colspan="3">
+                      <p>
+                        In the training phase of our methodology, we employ a two-step approach. 
+                        (a) Motion modules are integrated after each layer of the primary Text-to-Image (T2I) inpainting model, 
+                        optimized for the video in-painting task via synthetic masks applied to the video data. 
+                        (b) During the second training step, we retain the parameters in the UNet, 
+                        $\epsilon_\theta$, and exclusively train a structure guidance module $\mathbf{s}_\theta$, 
+                        leveraging a parameter copy from the UNet encoder.
+                        During inference, (c), for a video of length $N^\prime$, we construct a series of segments, 
+                        each comprising $N$ successive frames.
+                        Throughout each denoising step, results for every segment are computed and aggregated. 
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="3">
+                      <img src="pics/overview.png" alt="" width="100%" >
+                    </td>
+                  </tr>
+                </tbody>
+
+              </table>
+
+            </div>
+          </div>
+  </section>
+  <!--End paper poster -->
+
+  <!-- Video grid -->
+  <section class="hero is-light">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column">
+            <h2 class="title is-3">Video Inpainting Results</h2>
+            <div class="content has-text-justified">
+              <td colspan="3">
+                <p style="margin-top: -12px; font-size: 18px; color: red" >
+                  Hover over the videos to see the original video and text prompts.
+                </p>
+              </td>
+              <!-- </td> -->
+              <h3 class="title is-4">Uncropping</h3>
+              <div class="video-grid"> 
+                <div class="video-wrapper">
+                  <video preload="auto" class="hover-video" src="supp/assets/0_teaser/tiger/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/0_teaser/tiger/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A tiger walking near a waterfall</div>
+                </div>
+                <div class="video-wrapper" >
+                  <video preload="auto" class="hover-video" src="supp/assets/more_results/uncropping/48_frames_train/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/more_results/uncropping/48_frames_train/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A train traveling over a bridge in the mountains</div>
+                </div>
+                <div class="video-wrapper">
+                  <video preload="auto" class="hover-video" src="supp/assets/more_results/uncropping/54_frames_snow/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/more_results/uncropping/54_frames_snow/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A man hiking in the snow</div>
+                </div>
+                <div class="video-wrapper">
+                  <video preload="auto" class="hover-video" src="supp/assets/more_results/uncropping/32_frames_car/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/more_results/uncropping/32_frames_car/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A car driving on the road</div>
+                </div>
+              </div>
+              
+              <h3 class="title is-4">Object Swap</h3>
+              <div class="video-grid"> 
+                <div class="video-wrapper">
+                  <video preload="auto" class="hover-video" src="supp/assets/0_teaser/mini_cooper/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/0_teaser/mini_cooper/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A MINI Cooper driving down a road.</div>
+                </div>
+                <div class="video-wrapper" >
+                  <video preload="auto" class="hover-video" src="supp/assets/3_qual/porsche/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/3_qual/porsche/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A Porsche car driving down a road</div>
+                </div>
+                <div class="video-wrapper">
+                  <video preload="auto" class="hover-video" src="supp/assets/more_results/obj_swap/32_frames_can/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/more_results/obj_swap/32_frames_can/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A can floating in the water</div>
+                </div>
+                <div class="video-wrapper">
+                  <video preload="auto" class="hover-video" src="supp/assets/more_results/obj_swap/16_frames_otter/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/more_results/obj_swap/16_frames_otter/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">An otter swimming in the water</div>
+                </div>
+              </div>
+
+              <h3 class="title is-4">Re-texturing</h3>
+              <div class="video-grid"> 
+                <div class="video-wrapper">
+                  <video preload="auto" class="hover-video" src="supp/assets/3_qual/duck/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/3_qual/duck/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A white duck swimming in a lake.</div>
+                </div>
+                <div class="video-wrapper" >
+                  <video preload="auto" class="hover-video" src="supp/assets/more_results/retexturing/48_frames_coat/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/more_results/retexturing/48_frames_coat/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A women in glossy leather red coat walking through a greenhouse</div>
+                </div>
+                <div class="video-wrapper">
+                  <video preload="auto" class="hover-video" src="supp/assets/more_results/retexturing/16_frames_maple_leaf/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/more_results/retexturing/16_frames_maple_leaf/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A yellow maple leaf.</div>
+                </div>
+                <div class="video-wrapper">
+                  <video preload="auto" class="hover-video" src="supp/assets/more_results/retexturing/44_frames_hair/source.mp4" preload="metadata"
+                    autoplay loop muted> </video>
+                  <video preload="auto" class="default-video" src="supp/assets/more_results/retexturing/44_frames_hair/sample.mp4"
+                    preload="metadata" autoplay controls loop muted></video>
+                  <div class="overlay-text">A woman with blond hair walking through a wheat field.</div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="column1">
+                  <h3 class="title is-4">Content Removal</h3>
+                  <div class="video-grid2"> 
+                    <div class="video-wrapper">
+                      <video preload="auto" class="hover-video" src="supp/assets/more_results/content_removal/24_frames_wheat_field/source.mp4" preload="metadata"
+                        autoplay loop muted> </video>
+                      <video preload="auto" class="default-video" src="supp/assets/more_results/content_removal/24_frames_wheat_field/sample.mp4"
+                        preload="metadata" autoplay controls loop muted></video>
+                      <div class="overlay-text">A wheat field.</div>
+                    </div>
+                    <div class="video-wrapper">
+                      <video preload="auto" class="hover-video" src="supp/assets/more_results/content_removal/24_frames_purple_flowers/source.mp4" preload="metadata"
+                        autoplay loop muted> </video>
+                      <video preload="auto" class="default-video" src="supp/assets/more_results/content_removal/24_frames_purple_flowers/sample.mp4"
+                        preload="metadata" autoplay controls loop muted></video>
+                      <div class="overlay-text">A field of purple flowers.</div>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="column1">
+                  <h3 class="title is-4">Environment Swap</h3>
+                  <div class="video-grid2"> 
+                    <div class="video-wrapper" >
+                      <video preload="auto" class="hover-video" src="supp/assets/more_results/background_swap/24_frames_woman/source.mp4" preload="metadata"
+                        autoplay loop muted> </video>
+                      <video preload="auto" class="default-video" src="supp/assets/more_results/background_swap/24_frames_woman/sample.mp4"
+                        preload="metadata" autoplay controls loop muted></video>
+                      <div class="overlay-text">A woman walking, Egyptian pyramids</div>
+                    </div>
+                    <div class="video-wrapper" >
+                      <video preload="auto" class="hover-video" src="supp/assets/more_results/background_swap/24_frames_tiger/source.mp4" preload="metadata"
+                        autoplay loop muted> </video>
+                      <video preload="auto" class="default-video" src="supp/assets/more_results/background_swap/24_frames_tiger/sample.mp4"
+                        preload="metadata" autoplay controls loop muted></video>
+                      <div class="overlay-text">A tiger walking on a beach</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+              
+
+  </section>
+  <!-- End video preload="auto"grid -->
+
+  <!-- Paper poster -->
+  <section class="hero is-light">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-">
+            <h2 class="title is-3">Any-Length Text-to-Video Generation </h2>
+            <h3 class="title is-4">A Potential Extension</h3>
+            <div class="content has-text-justified">
+              <table width="90%" align="center" border="0">
+                <tr>
+                  <td style="font-family: Chalkduster; font-size: 16px; text-align: center;"> "A teddy bear walks on the beach." <br> <a style="font-family: sans-serif">(80 frames)</a> </td>
+                  <td style="font-family: Chalkduster; font-size: 16px; text-align: center;"> "A teddy bear dancing in Times Square" <br> <a style="font-family: sans-serif">(256 frames)</a> </td>
+                </tr>
+
+                <tr class="video-row">
+                  <td style="text-align: center;">
+                    <a href="supp/assets/t2v/80_frames_teddy_bear.mp4">
+                      <video preload="auto"width="224" src="supp/assets/t2v/80_frames_teddy_bear.mp4" autoplay loop controls muted/>
+                    </a>
+                  </td>
+                  <td style="text-align: center;">
+                    <a href="supp/assets/t2v/256_frames_teddy_bear.mp4">
+                      <video preload="auto"width="224" src="supp/assets/t2v/256_frames_teddy_bear.mp4" autoplay loop controls muted/>
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </div>
+          </div>
+  </section>
+  <!--End paper poster -->
+
+
+
+  <!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre>
+        <code>
+          @article{zhang2023avid,
+            title={AVID: Any-Length Video Inpainting with Diffusion Model},
+            author={Zhang, Zhixing and Wu, Bichen and Wang, Xiaoyan and Luo, Yaqiao and Zhang, Luxin and Zhao, Yinan and Vajda, Peter and Metaxas, Dimitris and Yu, Licheng},
+            journal={arXiv preprint arXiv:2312.03816},
+            year={2023}
+          }
+        </code>
+      </pre>
+    </div>
+  </section>
+  <!--End BibTex citation -->
+
+
+  <section class="hero is-small">
+    <div class="hero-body">
+      <footer class="footer">
+        <div class="container">
+          <div class="columns is-centered">
+            <div class="column is-8">
+              <div class="content">
+
+                <p>
+                  This website is borrowed from <a href="https://diffusion-tokenflow.github.io/"
+                    target="_blank">here</a>.
+                </p>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </footer>
+    </div>
+
+
+    <!-- Statcounter tracking code -->
+
+    <!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+    <!-- End of Statcounter Code -->
+    <script>
+      window.addEventListener('DOMContentLoaded', (event) => {
+        const videoWrappers = document.querySelectorAll('.video-wrapper');
+
+        videoWrappers.forEach(wrapper => {
+          const defaultVideo = wrapper.querySelector('.default-video');
+          const aspectRatio = defaultVideo.videoWidth / defaultVideo.videoHeight;
+          const height = wrapper.offsetWidth / aspectRatio;
+
+          wrapper.style.height = `${height}px`;
+
+          wrapper.addEventListener('mouseenter', () => {
+            defaultVideo.pause();
+            hoverVideo.play();
+          });
+
+          wrapper.addEventListener('mouseleave', () => {
+            defaultVideo.play();
+            hoverVideo.pause();
+          });
+        });
+      });
+      $(document).ready(function () {
+        var carouselItems = $('.carousel .item');
+        var numItems = carouselItems.length;
+        var numVideos = 5;
+        var currentIndex = 0;
+
+        $('.carousel').on('click', function () {
+          currentIndex++;
+          if (currentIndex + numVideos <= numItems) {
+            carouselItems.removeClass('active');
+            carouselItems.slice(currentIndex, currentIndex + numVideos).addClass('active');
+          } else {
+            currentIndex = 0;
+            carouselItems.removeClass('active');
+            carouselItems.slice(currentIndex, currentIndex + numVideos).addClass('active');
+          }
+        });
+
+        carouselItems.slice(currentIndex, currentIndex + numVideos).addClass('active');
+      });
+    </script>
+</body>
+
+</html>

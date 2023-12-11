@@ -1,0 +1,774 @@
+<link href="https://fonts.cdnfonts.com/css/chalkduster" rel="stylesheet">
+<style>
+    @import url('https://fonts.cdnfonts.com/css/chalkduster');
+</style>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>AVID: Any-Length Video Inpainting with Diffusion Models</title>
+    <link href="./assets/style.css" rel="stylesheet" type="text/css">
+  </head>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrollable Table with Arrow Buttons</title>
+    <style>
+        .scrollable-table-container {
+            display: flex;
+            align-items: center;
+        }
+        #scrollableTableWrapper {
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: normal;
+            
+        }
+        table {
+            border-collapse: collapse;
+            margin: auto;
+        }
+        .last-updated {
+          position: absolute;
+          top: 0;
+          right: 0;
+          padding: 10px;
+          color: black; /* text color */
+          font-size: 1.0em;
+          z-index: 1000; /* ensures it's on top of other elements */
+        }
+        .scroll-btn {
+          /* Style your buttons here */
+          cursor: pointer;
+      }
+        
+    </style>
+    </head>
+    
+
+<body>
+  <div class="last-updated">Last Updated: <a style="color: red">23rd November 2023</a></div>
+  <script>
+    window.onload = function() {
+      // Sync function
+      function syncVideos(master, slaves) {
+        master.addEventListener('play', () => {
+          slaves.forEach(video => {
+            video.currentTime = master.currentTime;
+            video.play();
+          });
+        });
+    
+        master.addEventListener('pause', () => {
+          slaves.forEach(video => video.pause());
+        });
+    
+        master.addEventListener('seeked', () => {
+          slaves.forEach(video => {
+            video.currentTime = master.currentTime;
+            video.play();
+          });
+        });
+      }
+    
+      // Sync setup for all masters
+      document.querySelectorAll('[id^="master"]').forEach(masterVideo => {
+        const masterId = masterVideo.getAttribute('id');
+        const slaveVideos = Array.from(document.querySelectorAll(`[data-master-id="${masterId}"]`));
+        syncVideos(masterVideo, slaveVideos);
+      });
+    };
+
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll('.scroll-btn').forEach(button => {
+          button.addEventListener('click', function() {
+              var wrapper = this.parentElement;
+              var scrollAmount = wrapper.querySelector('table').offsetWidth / 2;
+              if (this.classList.contains('left')) {
+                  wrapper.scrollLeft -= scrollAmount;
+              } else {
+                  wrapper.scrollLeft += scrollAmount;
+              }
+          });
+      });
+  });
+    
+  </script>
+
+	<button style="position: fixed;right: 15px;top:  90%;height: 40px;width: 120px; font-size: 20px;" type="button"><a href="#top">Back to top</a></button> 
+<div class="page-container">
+  <h1 align="center">AVID: Any-Length Video Inpainting with Diffusion Models</h1>
+  <!-- <h2 align="center">Paper ID #</h2> -->
+  <h2 align="center">Supplementary Material</h2>
+	
+  <p align="center">&nbsp;</p>
+	<a href="#top"></a>
+
+  <ul>
+    <li><a href="#qualitative_results_container" style="font-size:x-large">Qualitative Results</a></li><br>
+    <!-- sub section -->
+    <ul>
+      <li><a href="#uncropping" style="font-size:x-large">Uncropping</a></li><br>
+      <li><a href="#object_swap" style="font-size:x-large">Object swap</a></li><br>
+      <li><a href="#re-texturing" style="font-size:x-large">Re-texturing</a></li><br>
+    </ul>
+
+    <li><a href="#other_app_container" style="font-size:x-large">More Inpainting Taks</a></li><br>
+  
+    <li><a href="#comparison_container" style="font-size:x-large">Comparison</a></li><br>
+    <li><a href="#ablation_container" style="font-size:x-large">Ablation Studies</a></li><br>
+    <ul> 
+      <li><a href="#ab_control" style="font-size:x-large">Structure guidance</a></li><br>
+      <li><a href="#ab_multi" style="font-size:x-large">Temporal MultiDiffuson</a></li><br>
+      <li><a href="#ab_atten" style="font-size:x-large">Middle-frame attention guidance</a></li><br>
+    </ul>
+    <li><a href="#limitation_container" style="font-size:x-large">Limitations</a></li><br>
+    <li><a href="#t2v_results_container" style="font-size:x-large">Any-Length Text-to-Video Generation Results</a></li>
+  </ul>
+
+  
+  
+  <!-- <p><br><span class="emph">We recommend watching all images in full screen. Click on the images for seeing them in full scale.</span></p> -->
+	
+  <!------------------ BEGIN SECTION ------------------>
+  <p>&nbsp;</p>
+  <hr>
+  <h2 id="qualitative_results_container" align="center"><a name="image-results" id="image-results"></a>Qualitative Results</h2>
+
+  <p style="font-size: large" width="1000">
+    In this section, we provide video inpainting results using our method on different sub-tasks, including uncropping, object swap, and retexturing.<br>
+    The first row contain source videos.
+    For uncropping, the dark region indicates the region to fill in, 
+    while for object swap and retexturing, we apply a semi-transprant red mask to indicate the region to inpaint.<br>
+    We also provide the captions we use for each video as well as the number of frames in each video. <br>
+    Note, as discussed in the paper, <a style="color:red">structure guidance is only appled to retexturing</a>.
+  </p>
+
+  <h3 id="uncropping" align="left"><a name="uncropping" id="uncropping"></a> 1. Uncropping</h3>
+
+  <table width="1050" align="center">
+    <tr>
+      <th>Source Video (48 frames)</th>
+      <th>Source Video (24 frames)</th>
+      <th>Source Video (54 frames)</th>
+      <th>Source Video (32 frames)</th>
+    </tr>
+
+    <tr>
+      <th><a href="./assets/0_teaser/tiger/source.mp4"> <a href="./assets/0_teaser/tiger/source.mp4"> <video id="master1" width="250" src="./assets/0_teaser/tiger/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/3_qual/tiger/source.mp4"> <a href="./3_qual/0_teaser/tiger/source.mp4"> <video id="master2" width="250" src="./assets/3_qual/tiger/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/uncropping/54_frames_snow/source.mp4"> <a href="./assets/more_results/uncropping/54_frames_snow/source.mp4"> <video id="master_snow" width="250" src="./assets/more_results/uncropping/54_frames_snow/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/uncropping/32_frames_car/source.mp4"> <a href="./assets/more_results/uncropping/32_frames_car/source.mp4"> <video id="master4" width="250" src="./assets/more_results/uncropping/32_frames_car/source.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+
+    <tr>
+      <th style="font-family: Chalkduster" width="250"> "A tiger walking near a waterfall."  </th>
+      <th style="font-family: Chalkduster" width="250"> "A tiger walking through a jungle." </th>
+      <th style="font-family: Chalkduster" width="250"> "A man hiking in the snow."  </th>
+      <th style="font-family: Chalkduster" width="250"> "A car driving on the road." </th>
+    </tr>
+
+    <tr>
+      <th><a href="./assets/0_teaser/tiger/sample.mp4"> <a href="./assets/0_teaser/tiger/sample.mp4"> <video data-master-id="master1" width="250" src="./assets/0_teaser/tiger/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/3_qual/tiger/sample.mp4"> <a href="./3_qual/0_teaser/tiger/sample.mp4"> <video data-master-id="master2" width="250" src="./assets/3_qual/tiger/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/uncropping/54_frames_snow/sample.mp4"> <a href="./assets/more_results/uncropping/54_frames_snow/sample.mp4"> <video data-master-id="master_snow" width="250" src="./assets/more_results/uncropping/54_frames_snow/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/uncropping/32_frames_car/sample.mp4"> <a href="./assets/more_results/uncropping/32_frames_car/sample.mp4"> <video data-master-id="master4" width="250" src="./assets/more_results/uncropping/32_frames_car/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+    <tr>
+      <th  width="250" colspan="4"><hr></th>
+    </tr>
+    <tr>
+      <th>Source Video (48 frames)</th>
+      <th>Source Video (48 frames)</th>
+      <th>Source Video (64 frames)</th>
+      <th>Source Video (24 frames)</th>
+    </tr>
+    <tr>
+                
+      <th><a href="./assets/more_results/uncropping/48_frames_cow/source.mp4"> <a href="./assets/more_results/uncropping/48_frames_cow/source.mp4"> <video id="master6" width="250" src="./assets/more_results/uncropping/48_frames_cow/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/uncropping/48_frames_train/source.mp4"> <a href="./assets/more_results/uncropping/48_frames_train/source.mp4"> <video id="master8" width="250" src="./assets/more_results/uncropping/48_frames_train/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/uncropping/64_frames_duck/source.mp4"> <a href="./assets/more_results/uncropping/64_frames_duck/source.mp4"> <video id="master11" width="250" src="./assets/more_results/uncropping/64_frames_duck/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/uncropping/24_frames_elk/source.mp4"> <a href="./assets/more_results/uncropping/24_frames_elk/source.mp4"> <video id="master10" width="250" src="./assets/more_results/uncropping/24_frames_elk/source.mp4" autoplay loop controls muted/> </a> </a></th>
+
+    </tr>
+    <tr>
+                
+      <th style="font-family: Chalkduster" width="250"> "A cow in the water." </th>
+      <th style="font-family: Chalkduster" width="250"> "A train traveling over a bridge in the mountains." </th>
+      <th style="font-family: Chalkduster" width="250"> "A duck swimming in a lake."  </th>
+      <th style="font-family: Chalkduster" width="250"> "An elk walking in the grass near a river." </th>
+    </tr>
+    <tr>
+                
+      <th><a href="./assets/more_results/uncropping/48_frames_cow/sample.mp4"> <a href="./assets/more_results/uncropping/48_frames_cow/sample.mp4"> <video data-master-id="master6" width="250" src="./assets/more_results/uncropping/48_frames_cow/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/uncropping/48_frames_train/sample.mp4"> <a href="./assets/more_results/uncropping/48_frames_train/sample.mp4"> <video data-master-id="master8" width="250" src="./assets/more_results/uncropping/48_frames_train/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/uncropping/64_frames_duck/sample.mp4"> <a href="./assets/more_results/uncropping/64_frames_duck/sample.mp4"> <video data-master-id="master11" width="250" src="./assets/more_results/uncropping/64_frames_duck/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/uncropping/24_frames_elk/sample.mp4"> <a href="./assets/more_results/uncropping/24_frames_elk/sample.mp4"> <video data-master-id="master10" width="250" src="./assets/more_results/uncropping/24_frames_elk/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+  </table>
+
+
+  <p>&nbsp;</p>
+
+
+  <h3 id="object_swap" align="left"><a name="object-swap" id="object-swap"></a> 2. Object Swap</h3>
+
+  <table width="1050" align="center">
+    <tr>
+      <th>Source Video (32 frames)</th>
+      <th>Source Video (32 frames)</th>
+      <th>Source Video (36 frames)</th>
+      <th>Source Video (48 frames)</th>
+    </tr>
+    <tr>
+      <th><a href="./assets/0_teaser/mini_cooper/source.mp4"> <a href="./assets/0_teaser/mini_cooper/source.mp4"> <video id="master12" width="250" src="./assets/0_teaser/mini_cooper/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/obj_swap/32_frames_hat/source.mp4"> <a href="./assets/more_results/obj_swap/32_frames_hat/source.mp4"> <video id="master18" width="250" src="./assets/more_results/obj_swap/32_frames_hat/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/3_qual/porsche/source.mp4"> <a href="./assets/3_qual/porsche/source.mp4"> <video id="master14" width="250" src="./assets/3_qual/porsche/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/obj_swap/48_frames_jeep/source.mp4"> <a href="./assets/more_results/obj_swap/48_frames_jeep/source.mp4"> <video id="master15" width="250" src="./assets/more_results/obj_swap/48_frames_jeep/source.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+    <tr>
+      <th style="font-family: Chalkduster" width="250"> "A <a style="color: red;">mini cooper</a> driving down a road."  </th>
+      <th style="font-family: Chalkduster" width="250"> "A young boy wearing a <a style="color: red;">cowboy hat</a> standing in a wheat field."  </th>
+      <th style="font-family: Chalkduster" width="250"> "A <a style="color: red;">Porsche</a> car driving down a road."  </th>
+      <th style="font-family: Chalkduster" width="250"> "A <a style="color: red;">black Jeep</a> is driving down a road."  </th>
+    </tr>
+    <tr>
+      <th><a href="./assets/0_teaser/mini_cooper/sample.mp4"> <a href="./assets/0_teaser/mini_cooper/sample.mp4"> <video data-master-id="master12" width="250" src="./assets/0_teaser/mini_cooper/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/obj_swap/32_frames_hat/sample.mp4"> <a href="./assets/more_results/obj_swap/32_frames_hat/sample.mp4"> <video data-master-id="master18" width="250" src="./assets/more_results/obj_swap/32_frames_hat/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/3_qual/porsche/sample.mp4"> <a href="./assets/3_qual/porsche/sample.mp4"> <video data-master-id="master14" width="250" src="./assets/3_qual/porsche/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/obj_swap/48_frames_jeep/sample.mp4"> <a href="./assets/more_results/obj_swap/48_frames_jeep/sample.mp4"> <video data-master-id="master15" width="250" src="./assets/more_results/obj_swap/48_frames_jeep/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+    <tr>
+      <th  width="250" colspan="4"><hr></th>
+    </tr>
+    <tr>       
+      <th>Source Video (32 frames)</th>
+      <th>Source Video (32 frames)</th>
+      <th>Source Video (24 frames)</th>
+      <th>Source Video (16 frames)</th>
+    </tr>
+    <tr>
+      <th><a href="./assets/more_results/obj_swap/32_frames_leopard/source.mp4"> <a href="./assets/more_results/obj_swap/32_frames_leopard/source.mp4"> <video id="master17" width="250" src="./assets/more_results/obj_swap/32_frames_leopard/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/obj_swap/32_frames_can/source.mp4"> <a href="./assets/more_results/obj_swap/32_frames_can/source.mp4"> <video id="master19" width="250" src="./assets/more_results/obj_swap/32_frames_can/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/obj_swap/24_frames_forest/source.mp4"> <a href="./assets/more_results/obj_swap/24_frames_forest/source.mp4"> <video id="master22" width="250" src="./assets/more_results/obj_swap/24_frames_forest/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/obj_swap/16_frames_otter/source.mp4"> <a href="./assets/more_results/obj_swap/16_frames_otter/source.mp4"> <video id="master24" width="250" src="./assets/more_results/obj_swap/16_frames_otter/source.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+    <tr>
+      <th style="font-family: Chalkduster" width="250"> "A <a style="color: red;">leopard</a> walking on a rock."  </th>
+      <th style="font-family: Chalkduster" width="250"> "A <a style="color: red;">can</a> floating in the water."  </th>
+      <th style="font-family: Chalkduster" width="250"> "A van driving down a road near a <a style="color: red;">forest clearing</a>."  </th>
+      <th style="font-family: Chalkduster" width="250"> "An <a style="color: red;">otter</a> swimming in the water."  </th>
+    </tr>
+    <tr>
+      <th><a href="./assets/more_results/obj_swap/32_frames_leopard/sample.mp4"> <a href="./assets/more_results/obj_swap/32_frames_leopard/sample.mp4"> <video data-master-id="master17" width="250" src="./assets/more_results/obj_swap/32_frames_leopard/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/obj_swap/32_frames_can/sample.mp4"> <a href="./assets/more_results/obj_swap/32_frames_can/sample.mp4"> <video data-master-id="master19" width="250" src="./assets/more_results/obj_swap/32_frames_can/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/obj_swap/24_frames_forest/sample.mp4"> <a href="./assets/more_results/obj_swap/24_frames_forest/sample.mp4"> <video data-master-id="master22" width="250" src="./assets/more_results/obj_swap/24_frames_forest/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/obj_swap/16_frames_otter/sample.mp4"> <a href="./assets/more_results/obj_swap/16_frames_otter/sample.mp4"> <video data-master-id="master24" width="250" src="./assets/more_results/obj_swap/16_frames_otter/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+  </table>
+  
+  <p>&nbsp;</p>
+
+  <h3 id="re-texturing" align="left"><a name="re-texturing" id="re-texturing"></a> 3. Re-texturing</h3>
+
+  <table width="1050" align="center">
+    <tr>
+      <th>Source Video (32 frames)</th>
+      <th>Source Video (16 frames)</th>
+      <th>Source Video (16 frames)</th>
+      <th>Source Video (48 frames)</th>
+    </tr>
+    <tr>
+      <th><a href="./assets/3_qual/duck/source.mp4"> <a href="./assets/3_qual/duck/source.mp4"> <video id="master29" width="250" src="./assets/3_qual/duck/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/16_frames_leather/source.mp4"> <a href="./assets/more_results/retexturing/16_frames_leather/source.mp4"> <video id="master31" width="250" src="./assets/more_results/retexturing/16_frames_leather/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/16_frames_white_tiger/source.mp4"> <a href="./assets/more_results/retexturing/16_frames_white_tiger/source.mp4"> <video id="master32" width="250" src="./assets/more_results/retexturing/16_frames_white_tiger/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/48_frames_coat/source.mp4"> <a href="./assets/more_results/retexturing/48_frames_coat/source.mp4"> <video id="master39" width="250" src="./assets/more_results/retexturing/48_frames_coat/source.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+    <tr>
+      <th style="font-family: Chalkduster" width="250"> "A <a style="color: red;">white</a> duck swimming in a lake."  </th>
+      <th style="font-family: Chalkduster" width="250"> "A woman walking in the woods with a <a style="color: red;">leather</a>  backpack."  </th>
+      <th style="font-family: Chalkduster" width="250"> "A <a style="color: red;">white</a> tiger walking through the jungle."  </th>
+      <th style="font-family: Chalkduster" width="350"> "A women in <a style="color: red;">glossy leather red </a> coat walking through a greenhouse."  </th>
+    </tr>
+    <tr>
+      <th><a href="./assets/3_qual/duck/sample.mp4"> <a href="./assets/3_qual/duck/sample.mp4"> <video data-master-id="master29" width="250" src="./assets/3_qual/duck/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/16_frames_leather/sample.mp4"> <a href="./assets/more_results/retexturing/16_frames_leather/sample.mp4"> <video data-master-id="master31" width="250" src="./assets/more_results/retexturing/16_frames_leather/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/16_frames_white_tiger/sample.mp4"> <a href="./assets/more_results/retexturing/16_frames_white_tiger/sample.mp4"> <video data-master-id="master32" width="250" src="./assets/more_results/retexturing/16_frames_white_tiger/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/48_frames_coat/sample.mp4"> <a href="./assets/more_results/retexturing/48_frames_coat/sample.mp4"> <video id="master39" width="250" src="./assets/more_results/retexturing/48_frames_coat/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+    <tr>
+      <th  width="250" colspan="4"><hr></th>
+    </tr>
+    <tr>
+      <th>Source Video (32 frames)</th>
+      <th>Source Video (32 frames)</th>
+      <th>Source Video (16 frames)</th>
+      <th>Source Video (44 frames)</th>
+    </tr>
+    <tr>
+      <th><a href="./assets/more_results/retexturing/32_frames_frozen/source.mp4"> <a href="./assets/more_results/retexturing/32_frames_frozen/source.mp4"> <video id="master34" width="250" src="./assets/more_results/retexturing/32_frames_frozen/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/32_frames_metal_bird/source.mp4"> <a href="./assets/more_results/retexturing/32_frames_metal_bird/source.mp4"> <video id="master36" width="250" src="./assets/more_results/retexturing/32_frames_metal_bird/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/16_frames_maple_leaf/source.mp4"> <a href="./assets/more_results/retexturing/16_frames_maple_leaf/source.mp4"> <video id="master37" width="250" src="./assets/more_results/retexturing/16_frames_maple_leaf/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/44_frames_hair/source.mp4"> <a href="./assets/more_results/retexturing/44_frames_hair/source.mp4"> <video id="master38" width="250" src="./assets/more_results/retexturing/44_frames_hair/source.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+    <tr>
+      <th style="font-family: Chalkduster" width="350"> "A <a style="color: red;">frozen</a> cocktail in front of fire."  </th>
+      <th style="font-family: Chalkduster" width="350"> "A <a style="color: red;">metal</a> bird bathing in a pond."  </th>
+      <th style="font-family: Chalkduster" width="350"> "A <a style="color: red;">yellow</a> maple leaf."  </th>
+      <th style="font-family: Chalkduster" width="350"> "A woman with <a style="color: red;">blond</a> hair walking through a wheat field."  </th>
+    </tr>
+    <tr>
+      <th><a href="./assets/more_results/retexturing/32_frames_frozen/sample.mp4"> <a href="./assets/more_results/retexturing/32_frames_frozen/sample.mp4"> <video data-master-id="master34" width="250" src="./assets/more_results/retexturing/32_frames_frozen/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/32_frames_metal_bird/sample.mp4"> <a href="./assets/more_results/retexturing/32_frames_metal_bird/sample.mp4"> <video data-master-id="master36" width="250" src="./assets/more_results/retexturing/32_frames_metal_bird/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/16_frames_maple_leaf/sample.mp4"> <a href="./assets/more_results/retexturing/16_frames_maple_leaf/sample.mp4"> <video id="master37" width="250" src="./assets/more_results/retexturing/16_frames_maple_leaf/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/retexturing/44_frames_hair/sample.mp4"> <a href="./assets/more_results/retexturing/44_frames_hair/sample.mp4"> <video id="master38" width="250" src="./assets/more_results/retexturing/44_frames_hair/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+  </table>
+
+
+  <!------------------ END SECTION ------------------>
+
+  <!------------------ BEGIN SECTION ------------------>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+	<hr>
+	<h2 id="other_app_container" align="center"><a name="other_tasks" id="other_tasks"></a>More Inpainting Tasks</h2>
+
+  <p style="font-size: large" width="1000">
+    In this section, we explore how our method can be applied to other video inpainting applications, including content removal and environment swap. <br>
+    Please refer to <a style="color:red">Appendix B</a> for details.
+  </p>
+
+  <table width="1050" align="center">
+    <tr>
+      <th>Source Video (24 frames) <br> Content removal</th>
+      <th style="font-family: Chalkduster" width="250"> "A wheat field."  </th>
+      <th>Source Video (24 frames)<br> Environment swap</th>
+      <th style="font-family: Chalkduster" width="250"> "A woman walking, <a style="color: red;">Egyptian pyramids</a>."  </th>
+    </tr>
+    <tr>
+      <th><a href="./assets/more_results/content_removal/24_frames_wheat_field/source.mp4"> <a href="./assets/more_results/content_removal/24_frames_wheat_field/source.mp4"> <video id="master_cr1" width="250" src="./assets/more_results/content_removal/24_frames_wheat_field/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/content_removal/24_frames_wheat_field/sample.mp4"> <a href="./assets/more_results/content_removal/24_frames_wheat_field/sample.mp4"> <video data-master-id="master_cr1" width="250" src="./assets/more_results/content_removal/24_frames_wheat_field/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/background_swap/24_frames_woman/source.mp4"> <a href="./assets/more_results/background_swap/24_frames_woman/source.mp4"> <video id="master_bs1" width="250" src="./assets/more_results/background_swap/24_frames_woman/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/background_swap/24_frames_woman/sample.mp4"> <a href="./assets/more_results/background_swap/24_frames_woman/sample.mp4"> <video data-master-id="master_bs1" width="250" src="./assets/more_results/background_swap/24_frames_woman/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+    <tr>
+      <th  width="250" colspan="4"><hr></th>
+    </tr>
+
+    <tr>
+      <th>Source Video (24 frames) <br> Content removal</th>
+      <th style="font-family: Chalkduster" width="250"> "A field of purple flowers."  </th>
+      <th>Source Video (24 frames)<br> Environment swap</th>
+      <th style="font-family: Chalkduster" width="250"> "A tiger walking on <a style="color: red;">a beach</a>."  </th>
+    </tr>
+    <tr>
+      <th><a href="./assets/more_results/content_removal/24_frames_purple_flowers/source.mp4"> <a href="./assets/more_results/content_removal/24_frames_purple_flowers/source.mp4"> <video id="master_cr2" width="250" src="./assets/more_results/content_removal/24_frames_purple_flowers/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/content_removal/24_frames_purple_flowers/sample.mp4"> <a href="./assets/more_results/content_removal/24_frames_purple_flowers/sample.mp4"> <video data-master-id="master_cr2" width="250" src="./assets/more_results/content_removal/24_frames_purple_flowers/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/background_swap/24_frames_tiger/source.mp4"> <a href="./assets/more_results/background_swap/24_frames_tiger/source.mp4"> <video id="master_bs2" width="250" src="./assets/more_results/background_swap/24_frames_tiger/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/more_results/background_swap/24_frames_tiger/sample.mp4"> <a href="./assets/more_results/background_swap/24_frames_tiger/sample.mp4"> <video data-master-id="master_bs2" width="250" src="./assets/more_results/background_swap/24_frames_tiger/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+  </table>
+
+   <!------------------ END SECTION ------------------>
+
+
+  <!------------------ BEGIN SECTION ------------------>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <hr>
+  <h2 id="comparison_container" align="center"><a name="comparison_results" id="comparison_results"></a>Comparison</h2>
+
+  <p style="font-size: large" width="1000">
+    In this section, we provide video comparison results of our method with others as mentioned in the paper. <br>
+    The first column are the source videos, and the rest are the results of different methods. <br>
+    Please refer to <a style="color:red">Sec. 4.2</a> in the main paper and <a style="color:red">Appendix D</a> for more discussion.
+    As shown below, pre-frame and T2V0 can obtain results with good visual quality, but they are not temporally coherent. <br>
+    VideoComposer and TokenFlow can generate temporally coherent results, but they both suffer from background detail loss. <br>
+    In both cases, <a style="color:red">VideoComposer</a> exhibits signficant <a style="color:red">color shifting</a>. <br>
+    In the first case, <a style="color:red">TokenFlow</a> misses details including <a style="color:red">the road lamp along the road</a> while in the second case, 
+    <a style="color:red">fails to preserve background color</a>. <br>
+    Our method can generate temporally coherent results with good visual quality and background details. <br>
+  </p>
+
+  <table width="1050" align="center">
+    <tr>
+      <tr>
+        <th>Source Video (16 frames)</th>
+        <th style="font-family: Chalkduster" width="160" colspan="5"> "A <a style="color: red;">purple</a> car driving down a road."  </th>
+      </tr>
+
+      <tr>
+        <th><a href="./assets/5_comp/car/source.mp4"> <a href="./assets/5_comp/car/source.mp4"> <video id="m_comp_1" width="160" src="./assets/5_comp/car/source.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/5_comp/car/per_frame.mp4"> <a href="./assets/5_comp/car/per_frame.mp4"> <video data-master-id="m_comp_1" width="160" src="./assets/5_comp/car/per_frame.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/5_comp/car/t2v0.mp4"> <a href="./assets/5_comp/car/t2v0.mp4"> <video data-master-id="m_comp_1" width="160" src="./assets/5_comp/car/t2v0.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/5_comp/car/videocomposer.mp4"> <a href="./assets/5_comp/car/videocomposer.mp4"> <video data-master-id="m_comp_1" width="160" src="./assets/5_comp/car/videocomposer.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/5_comp/car/tokenflow.mp4"> <a href="./assets/5_comp/car/tokenflow.mp4"> <video data-master-id="m_comp_1" width="160" src="./assets/5_comp/car/tokenflow.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/5_comp/car/ours.mp4"> <a href="./assets/5_comp/car/ours.mp4"> <video data-master-id="m_comp_1" width="160" src="./assets/5_comp/car/ours.mp4" autoplay loop controls muted/> </a> </a></th>
+      </tr>
+
+      <tr>
+        <th>&nbsp;</th>
+        <th style="font-family: Chalkduster" width="160" colspan="5"> "A <a style="color: red;">flamingo</a> swimming in a lake."  </th>
+      </tr>
+
+      <tr>
+        <th><a href="./assets/5_comp/flamingo/source.mp4"> <a href="./assets/5_comp/flamingo/source.mp4"> <video id="m_comp_2" width="160" src="./assets/5_comp/flamingo/source.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/5_comp/flamingo/per_frame.mp4"> <a href="./assets/5_comp/flamingo/per_frame.mp4"> <video data-master-id="m_comp_2" width="160" src="./assets/5_comp/flamingo/per_frame.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/5_comp/flamingo/t2v0.mp4"> <a href="./assets/5_comp/flamingo/t2v0.mp4"> <video data-master-id="m_comp_2" width="160" src="./assets/5_comp/flamingo/t2v0.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/5_comp/flamingo/videocomposer.mp4"> <a href="./assets/5_comp/flamingo/videocomposer.mp4"> <video data-master-id="m_comp_2" width="160" src="./assets/5_comp/flamingo/videocomposer.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/5_comp/flamingo/tokenflow.mp4"> <a href="./assets/5_comp/flamingo/tokenflow.mp4"> <video data-master-id="m_comp_2" width="160" src="./assets/5_comp/flamingo/tokenflow.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/5_comp/flamingo/ours.mp4"> <a href="./assets/5_comp/flamingo/ours.mp4"> <video data-master-id="m_comp_2" width="160" src="./assets/5_comp/flamingo/ours.mp4" autoplay loop controls muted/> </a> </a></th>
+      </tr>
+
+      <tr>
+        <th>&nbsp;</th>
+        <th>Per-Frame</th>
+        <th>T2V0<a href="#ref-t2v0">[2]</a></th>
+        <th>VideoComposer<a href="#ref-videocomposer">[3]</a></th>
+        <th>TokenFlow<a href="#ref-tokenflow">[4]</a></th>
+        <th>Ours</th>
+      </tr>
+    </tr>
+  </table>
+
+  <!------------------ END SECTION ------------------>
+
+
+<!------------------ BEGIN SECTION ------------------>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+	<hr>
+	<h2 id="ablation_container" align="center"><a name="ablation_results" id="ablation_results"></a>Ablation Studies</h2>
+
+  <p style="font-size: large" width="1000"> 
+    In this section, we provide ablation study results of our method as mentioned in the paper. <br>
+  </p>
+
+  <h3 id="ab_control" align="left"><a name="ab_control" id="ab_control"></a> 1. Structure guidance</h3>
+
+  <p style="font-size: large" width="1000"> 
+    In the following, we show the effect of structure guidance on object swap and retexturing. <br>
+    In the first row, we showcase the results of retexturing with different scale of structure guidance, 
+    while in the second row, we show results of object swap.<br>
+    Please refer to <a style="color:red">Sec. 4.3 Effect of structure guidance</a> in the main paper for more discussion.
+  </p>
+
+  <table width="1050" align="center">
+    <tr>
+      <th>Source Video (16 frames)</th>
+      <th style="font-family: Chalkduster" width="250" colspan="3"> "A <a style="color: red;">golden furred</a> panda eating bamboo."  </th>
+    </tr>
+    
+    <tr>
+      <th><a href="./assets/ablation/control/retexturing/source.mp4"> <a href="./assets/ablation/control/retexturing/source.mp4"> <video id="master_structure" width="250" src="./assets/ablation/control/retexturing/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/control/retexturing/sample_0_0.mp4"> <a href="./assets/ablation/control/retexturing/sample_0_0.mp4"> <video data-master-id="master_structure" width="250" src="./assets/ablation/control/retexturing/sample_0_0.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/control/retexturing/sample_0_5.mp4"> <a href="./assets/ablation/control/retexturing/sample_0_5.mp4"> <video data-master-id="master_structure" width="250" src="./assets/ablation/control/retexturing/sample_0_5.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/control/retexturing/sample_1_0.mp4"> <a href="./assets/ablation/control/retexturing/sample_1_0.mp4"> <video data-master-id="master_structure" width="250" src="./assets/ablation/control/retexturing/sample_1_0.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+
+    <tr>
+      <th>&nbsp;</th>
+      <th style="font-family: Chalkduster" width="250" colspan="3"> "A <a style="color: red;">raccoon</a> eating bamboo."  </th>
+    </tr>
+
+    <tr>
+      <th>&nbsp;</th>
+      <th><a href="./assets/ablation/control/obj_swap/sample_0_0.mp4"> <a href="./assets/ablation/control/obj_swap/sample_0_0.mp4"> <video data-master-id="master_structure" width="250" src="./assets/ablation/control/obj_swap/sample_0_0.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/control/obj_swap/sample_0_5.mp4"> <a href="./assets/ablation/control/obj_swap/sample_0_5.mp4"> <video data-master-id="master_structure" width="250" src="./assets/ablation/control/obj_swap/sample_0_5.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/control/obj_swap/sample_1_0.mp4"> <a href="./assets/ablation/control/obj_swap/sample_1_0.mp4"> <video data-master-id="master_structure" width="250" src="./assets/ablation/control/obj_swap/sample_1_0.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+
+    <tr>
+      <th>&nbsp;</th>
+    </tr>
+
+    <tr>
+      <th>&nbsp;</th>
+      <th>0.0</th>
+      <th>0.5</th>
+      <th>1.0</th>
+    </tr>
+
+  </table>
+  
+  <h3 id="ab_multi" align="left"><a name="ab_multi" id="ab_multi"></a> 2. Temporal MultiDiffuson</h3>
+
+  <p style="font-size: large" width="1000"> 
+    In this sub-section, we show the effectivness of temporal multi-diffusion. <br>
+    As discussed in the paper, in this sub-section, <a style="color: red;">middle-frame attention guidance is not applied for fair comparison.</a> <br>
+  </p>
+
+  <h4 id="ab_multi_per_clip" align="left"><a name="ab_multi_per_clip" id="ab_multi_per_clip"></a> 2.1. Versus per-clip generation</h4>
+
+  <p style="font-size: large" width="1000"> 
+    We first show results of our method with per-clip generation. <br>
+    As discussed in the main paper (<a style="color: red;">Sec. 4.3 Temporal MultiDiffusion</a>), for a video with 32 frames, per-clip method treat each 16 frames as a clip and generate two clips independently. <br>
+    As can be seen in the following, the results are not temporally coherent. <br>
+    At the boundary of each clip, the generated content changes abruptly (<a style="color: red;">the neck of the generated goose and the pose of the raccoon</a>). <br>
+    In contrast, our method generates the whole video at once, and thus is temporally coherent. <br>
+  </p>
+
+  <table width="800" align="center">
+    <tr>
+      <th>Source Video (32 frames)</th>
+      <th style="font-family: Chalkduster" width="250" colspan="2"> "A <a style="color: red;">goose</a> swimming in a lake."  </th>
+      
+    </tr>
+
+    <tr>
+      <th><a href="./assets/ablation/multi/per_clip/32_frames_goose/source.mp4"> <a href="./assets/ablation/multi/per_clip/32_frames_goose/source.mp4"> <video id="m_ab_md_1" width="250" src="./assets/ablation/multi/per_clip/32_frames_goose/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/multi/per_clip/32_frames_goose/sample_wo.mp4"> <a href="./assets/ablation/multi/per_clip/32_frames_goose/sample_wo.mp4"> <video data-master-id="m_ab_md_1" width="250" src="./assets/ablation/multi/per_clip/32_frames_goose/sample_wo.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/multi/per_clip/32_frames_goose/sample_w.mp4"> <a href="./assets/ablation/multi/per_clip/32_frames_goose/sample_w.mp4"> <video data-master-id="m_ab_md_1" width="250" src="./assets/ablation/multi/per_clip/32_frames_goose/sample_w.mp4" autoplay loop controls muted/> </a> </a></th>
+
+      
+    </tr>
+
+    <tr>
+      <th>Source Video (32 frames)</th>
+      <th style="font-family: Chalkduster" width="250" colspan="2"> "A <a style="color: red;">raccoon</a> standing on a waterfall."  </th>
+    </tr>
+    <tr>
+      <th><a href="./assets/ablation/multi/per_clip/32_frames_raccoon/source.mp4"> <a href="./assets/ablation/multi/per_clip/32_frames_raccoon/source.mp4"> <video id="m_ab_md_2" width="250" src="./assets/ablation/multi/per_clip/32_frames_raccoon/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/multi/per_clip/32_frames_raccoon/sample_wo.mp4"> <a href="./assets/ablation/multi/per_clip/32_frames_raccoon/sample_wo.mp4"> <video data-master-id="m_ab_md_2" width="250" src="./assets/ablation/multi/per_clip/32_frames_raccoon/sample_wo.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/multi/per_clip/32_frames_raccoon/sample_w.mp4"> <a href="./assets/ablation/multi/per_clip/32_frames_raccoon/sample_w.mp4"> <video data-master-id="m_ab_md_2" width="250" src="./assets/ablation/multi/per_clip/32_frames_raccoon/sample_w.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+
+    <tr>
+      <th>&nbsp;</th>
+      <th>Per-clip</th>
+      <th>Ours</th>
+    </tr>
+
+
+  </table>
+
+  <h4 id="ab_multi_large_chunk" align="left"><a name="ab_multi_large_chunk" id="ab_multi_large_chunk"></a> 2.2. Versus larger chunk generation</h4>
+
+  <p style="font-size: large" width="1000"> 
+    As discussed in the supplementary material (<a style="color: red;">Appendix E.1.</a>), due to the inherent property of temporal self-attention,
+    our model can be directly applied to generate videos with more frames. <br>
+    However, this comes with a cost of generation quality. <br>
+    We denote this as larger chunk generation and use <a style="color:red">Baseline</a> below to represent it. <br>
+    As shown in the following, baseline method sacrifices the generation quality. <br>
+    In the first case, <a style="color: red">ears</a> of the generated raccoon appear in the wrong position. 
+  </p>
+
+  <table width="800" align="center">
+    <tr>
+      <th>Source Video (24 frames)</th>
+      <th style="font-family: Chalkduster" width="250" colspan="2"> "A <a style="color: red;">raccoon</a> standing on a waterfall."  </th>
+    </tr>
+
+    <tr>
+      <th><a href="./assets/ablation/multi/larger_chunk/24_frames_raccoon/source.mp4"> <a href="./assets/ablation/multi/larger_chunk/24_frames_raccoon/source.mp4"> <video id="m_ab_md_3" width="250" src="./assets/ablation/multi/larger_chunk/24_frames_raccoon/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/multi/larger_chunk/24_frames_raccoon/sample_24.mp4"> <a href="./assets/ablation/multi/larger_chunk/24_frames_raccoon/sample_24.mp4"> <video data-master-id="m_ab_md_3" width="250" src="./assets/ablation/multi/larger_chunk/24_frames_raccoon/sample_24.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/multi/larger_chunk/24_frames_raccoon/sample_16.mp4"> <a href="./assets/ablation/multi/larger_chunk/24_frames_raccoon/sample_16.mp4"> <video data-master-id="m_ab_md_3" width="250" src="./assets/ablation/multi/larger_chunk/24_frames_raccoon/sample_16.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+
+    <tr>
+      <th>Source Video (24 frames)</th>
+      <th style="font-family: Chalkduster" width="250" colspan="2"> "A brown bear cub walking through a river."  </th>
+    </tr>
+
+    <tr>
+      <th><a href="./assets/ablation/multi/larger_chunk/24_frames_bear/source.mp4"> <a href="./assets/ablation/multi/larger_chunk/24_frames_bear/source.mp4"> <video id="m_ab_md_4" width="250" src="./assets/ablation/multi/larger_chunk/24_frames_bear/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/multi/larger_chunk/24_frames_bear/sample_24.mp4"> <a href="./assets/ablation/multi/larger_chunk/24_frames_bear/sample_24.mp4"> <video data-master-id="m_ab_md_4" width="250" src="./assets/ablation/multi/larger_chunk/24_frames_bear/sample_24.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/multi/larger_chunk/24_frames_bear/sample_16.mp4"> <a href="./assets/ablation/multi/larger_chunk/24_frames_bear/sample_16.mp4"> <video data-master-id="m_ab_md_4" width="250" src="./assets/ablation/multi/larger_chunk/24_frames_bear/sample_16.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+
+    <tr>
+      <th>&nbsp;</th>
+      <th>Baseline</th>
+      <th>Ours</th>
+    </tr>
+
+  </table>
+  
+
+  <h3 id="ab_atten" align="left"><a name="ab_atten" id="ab_atten"></a> 3. Middle-frame attention guidance</h3>
+
+  <p style="font-size: large" width="1000"> 
+    We present the effect of Middle-frame attention guidance in this sub-section. <br>
+    Detailed disscussion can be found in <a style="color: red;">Sec. 4.3 Effect of middle-frame attention guidance</a>. <br>
+    We show the results of object swap with different scale of attention guidance. <br>
+    When attention guidance is not applied, in this case, <a style="color:red">0.0</a>, 
+    the  <a style="color:red">color of the car shifts smoothly from red to black</a>. <br>
+    With attention guidance, the color of the car can maintain the same throughout the video. <br>
+    However, when the guidance is too strong, in this case, <a style="color:red">1.0</a>, certain artifacts are introduced,
+    as can be seen in the end of the video, specifically <a style="color:red">the rear wheel of car</a>. <br>
+  </p>
+
+  <table width="1050" align="center">
+    <tr>
+      <th>Source Video (32 frames)</th>
+      <th style="font-family: Chalkduster" width="160" colspan="5"> "A <a style="color: red;">mini cooper</a> driving down a road."  </th>
+    </tr>
+
+    <tr>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/source.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/source.mp4"> <video id="m_ab_atten_1" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/sample_0_0.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/sample_0_0.mp4"> <video data-master-id="m_ab_atten_1" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/sample_0_0.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/sample_0_3.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/sample_0_3.mp4"> <video data-master-id="m_ab_atten_1" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/sample_0_3.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/sample_0_5.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/sample_0_5.mp4"> <video data-master-id="m_ab_atten_1" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/sample_0_5.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/sample_0_8.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/sample_0_8.mp4"> <video data-master-id="m_ab_atten_1" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/sample_0_8.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/sample_1_0.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/sample_1_0.mp4"> <video data-master-id="m_ab_atten_1" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/sample_1_0.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+
+    <tr>
+      <th>&nbsp;</th>
+      <th>0.0</th>
+      <th>0.3</th>
+      <th>0.5</th>
+      <th>0.8</th>
+      <th>1.0</th>
+    </tr>
+  </table>
+  
+  
+  <p style="font-size: large" width="1000"> 
+    We also conduct further ablation analysis to show the effectiveness of the middle-frame attention guidance mechanism we propose. <br>
+    As discussed in <a style="color: red;">Appendix E.2.</a> we compare our method with three different attention based approaches. <br>
+    Please refer to the appendix for more description on different methods. <br>
+  </p>
+
+  <table width="900" align="center">
+    <tr>
+      <th>Source Video (32 frames)</th>
+      <th style="font-family: Chalkduster" width="160" colspan="4"> "A <a style="color: red;">mini cooper</a> driving down a road."  </th>
+    </tr>
+    <tr>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/source.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/source.mp4"> <video id="m_ab_atten_2" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/source.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/sample_sc.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/sample_sc.mp4"> <video data-master-id="m_ab_atten_2" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/sample_sc.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/sample_middle_frame_sc.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/sample_middle_frame_sc.mp4"> <video data-master-id="m_ab_atten_2" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/sample_middle_frame_sc.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/sample_first_frame.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/sample_first_frame.mp4"> <video data-master-id="m_ab_atten_2" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/sample_first_frame.mp4" autoplay loop controls muted/> </a> </a></th>
+      <th><a href="./assets/ablation/atten/32_frames_mini_cooper/sample_0_3.mp4"> <a href="./assets/ablation/atten/32_frames_mini_cooper/sample_0_3.mp4"> <video data-master-id="m_ab_atten_2" width="160" src="./assets/ablation/atten/32_frames_mini_cooper/sample_0_3.mp4" autoplay loop controls muted/> </a> </a></th>
+    </tr>
+    <tr>
+      <th>&nbsp;</th>
+      <th>SC_Attn</th>
+      <th>MSC_Attn</th>
+      <th>First-frame attention</th>
+      <th>Middle-frame attention(ours)</th>
+    </tr>
+  </table>
+
+<!------------------ END SECTION ------------------>
+  
+
+<!--------------- BEGIN SECTION ------------------>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <hr>
+  <h2 id="limitation_container" align="center"><a name="limitation_results" id="limitation_results"></a>Limitations</h2>
+
+  <!-- <p style="font-size: large" width="1000"> 
+    In this section, we show the limitations of our method. <br>
+    We provide two object swap examples to illustrate the limitation of our method. <br>
+    As shown in the first case, when the <a style="color:red">left foot</a> of the generated lion moving forward,
+    it goes through the right foot of the lion. <br>
+    As shown in the second case, when the generated horse turning around,
+    the <a style="color:red">head</a> of the horse first disappears and then reappears. <br>
+  </p> -->
+
+  <table width="1050" align="center">
+    <tr>
+      <tr>
+        <th>Source Video (32 frames)</th>
+        <th style="font-family: Chalkduster" width="250"> "A <a style="color: red;">lion</a> walking through a jungle."  </th>
+        <th>Source Video (16 frames)</th>
+        <th style="font-family: Chalkduster" width="250"> "A <a style="color: red;">horse</a> wandering in the woods."  </th>
+      </tr>
+
+      <tr>
+        <th><a href="./assets/limitations/32_frames_lion/source.mp4"> <a href="./assets/limitations/32_frames_lion/source.mp4"> <video id="m_limit_1" width="250" src="./assets/limitations/32_frames_lion/source.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/limitations/32_frames_lion/sample.mp4"> <a href="./assets/limitations/32_frames_lion/sample.mp4"> <video data-master-id="m_limit_1" width="250" src="./assets/limitations/32_frames_lion/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/limitations/16_frames_horse/source.mp4"> <a href="./assets/limitations/16_frames_horse/source.mp4"> <video id="m_limit_2" width="250" src="./assets/limitations/16_frames_horse/source.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="./assets/limitations/16_frames_horse/sample.mp4"> <a href="./assets/limitations/16_frames_horse/sample.mp4"> <video data-master-id="m_limit_2" width="250" src="./assets/limitations/16_frames_horse/sample.mp4" autoplay loop controls muted/> </a> </a></th>
+      </tr>
+    </tr>
+  </table>
+
+
+<!------------------ END SECTION ------------------>
+
+
+<!------------------ BEGIN SECTION ------------------>
+	<p>&nbsp;</p>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+	<hr>
+	<h2 id="t2v_results_container" align="center"><a name="t2v_results" id="t2v_results"></a>Any-Length Text-to-Video Generation Results <br>
+    <p style="color:blue; font-size: large">
+      A Potential Extension
+    </p>
+  </h2>
+
+  <!-- <p style="font-size: large" width="1000">
+    In this section, we apply our inference method directly to text-to-video generation methods. <br>
+    We follow the <a href="https://github.com/guoyww/AnimateDiff/blob/main/configs/prompts/v2/5-RealisticVision.yaml">instructions</a> in the official  
+    <a href="https://github.com/guoyww/AnimateDiff">implementation</a> of 
+    AnimateDiff <a href="#ref-animatediff">[1]</a> to generate videos from text. <br>
+    As discussed in the <a href="https://github.com/guoyww/AnimateDiff/blob/d13b97cbde4a419454cef03758a521c5549c86f1/README.md?plain=1#L137-L140">repo</a>,
+    various numbers of frames may affect the generation quality. <br>
+    We show that our method can <a style="color:red"> extend the generation length without sacrificing the quality</a>. <br>
+  </p> -->
+
+  <table width="600" align="center">
+    <tr>
+      <tr>
+        <th style="font-family: Chalkduster"> "A teddy bear walks on the beach." <br> <a style="font-family: sans-serif">(80 frames)</a> </th>
+        <th style="font-family: Chalkduster"> "A teddy bear dancing in Times Square" <br> <a style="font-family: sans-serif">(256 frames)</a> </th>
+      </tr>
+      <!-- <tr>
+        <td><img src="assets/t2v/80_frames_teddy_bear.gif" width="300" height="300"></td>
+        <td><img src="assets/t2v/80_frames_ballet.gif" width="300" height="300"></td>
+        <td><img src="assets/t2v/256_frames_teddy_bear.gif" width="300" height="300"></td>
+      </tr> -->
+      <tr>
+        <th><a href="assets/t2v/80_frames_teddy_bear.mp4"> <a href="assets/t2v/80_frames_teddy_bear.mp4"> <video  width="250" src="assets/t2v/80_frames_teddy_bear.mp4" autoplay loop controls muted/> </a> </a></th>
+        <th><a href="assets/t2v/256_frames_teddy_bear.mp4"> <a href="assets/t2v/256_frames_teddy_bear.mp4"> <video  width="250" src="assets/t2v/256_frames_teddy_bear.mp4" autoplay loop controls muted/> </a> </a></th>
+      </tr>
+
+
+    </tr>
+  </table>
+
+
+<!---------------------END SECTION------------------>
+	
+<p><br>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<h2 id="ref" align="left"><a name="ref" id="ref"></a>References</h2>
+
+<p>
+	<a name="ref-animatediff" id="ref-animatediff"></a>
+	[1] Yuwei Guo, Ceyuan Yang, Anyi Rao, Yaohui Wang, Yu Qiao, Dahua Lin, and Bo Dai. Animatediff: Animate your personalized text-to-image diffusion models without specific tuning. arXiv preprint arXiv:2307.04725, 2023.
+</p>
+
+<p>
+	<a name="ref-t2v0" id="ref-t2v0"></a>
+  [2] Levon Khachatryan, Andranik Movsisyan, Vahram Tadevosyan, Roberto Henschel, Zhangyang Wang, Shant Navasardyan, and Humphrey Shi. Text2video-zero: Text-to-image diffusion models are zero-shot video generators. arXiv preprint arXiv:2303.13439, 2023.
+</p>
+
+<p>
+	<a name="ref-videocomposer" id="ref-videocomposer"></a>
+  [3] Xiang Wang, Hangjie Yuan, Shiwei Zhang, Dayou Chen, Jiuniu Wang, Yingya Zhang, Yujun Shen, Deli Zhao, and Jingren Zhou. Videocomposer: Compositional video synthesis with motion controllability. arXiv preprint arXiv:2306.02018, 2023.
+</p>
+
+<p>
+	<a name="ref-tokenflow" id="ref-tokenflow"></a>
+  [4] Michal Geyer, Omer Bar-Tal, Shai Bagon, and Tali Dekel. Tokenflow: Consistent diffusion features for consistent video editing. arXiv preprint arXiv:2307.10373, 2023.
+</p>
+
+</div>
+
+</body></html>
