@@ -1,13 +1,14 @@
-# AVID <br><sub> <ins>A</ins>ny-Length <ins>V</ins>ideo <ins>I</ins>npainting with <ins>D</ins>iffusion Model </sub>
+# AVID <br><sub> Any-Length Video Inpainting with Diffusion Model </sub>
 
 
 [![arXiv](https://img.shields.io/badge/arXiv-2312.03816-b31b1b)](https://arxiv.org/abs/2312.03816)
 [![Project Page](https://img.shields.io/badge/Project-Website-orange)](https://zhang-zx.github.io/AVID)
+[![Static Badge](https://img.shields.io/badge/supplementary-blue)](https://zhang-zx.github.io/AVID/supp/index.html)
 
-This respository contains the code for the paper [AVID: <ins>A</ins>ny-Length <ins>V</ins>ideo <ins>I</ins>npainting with <ins>D</ins>iffusion Model]().
-For more visualization results, please check our [webpage](https://zhang-zx.github.io/AVID/).
+This respository contains the code for the paper [AVID: <ins>A</ins>ny-Length <ins>V</ins>ideo <ins>I</ins>npainting with <ins>D</ins>iffusion Model](https://arxiv.org/pdf/2312.03816.pdf).
+For more visualization results, please check our [supplementary materils](https://zhang-zx.github.io/AVID/supp/index.html).
 
-> **[AVID: <ins>A</ins>ny-Length <ins>V</ins>ideo <ins>I</ins>npainting with <ins>D</ins>iffusion Model](https://zhang-zx.github.io/AVID/)** \
+> **[AVID: <ins>A</ins>ny-Length <ins>V</ins>ideo <ins>I</ins>npainting with <ins>D</ins>iffusion Model](https://arxiv.org/abs/2312.03816)** \
 > [Zhixing Zhang](https://zhang-zx.github.io/) <sup>1</sup>,
 > [Bichen Wu](https://scholar.google.com/citations?user=K3QJPdMAAAAJ&hl) <sup>2</sup>,
 > [Xiaoyan Wang](https://xiaoyan.horizonian.com/) <sup>2</sup>,
