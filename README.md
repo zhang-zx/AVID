@@ -5,7 +5,7 @@
 [![Project Page](https://img.shields.io/badge/Project-Website-orange)](https://zhang-zx.github.io/AVID)
 [![Static Badge](https://img.shields.io/badge/supplementary-blue)](https://zhang-zx.github.io/AVID/supp/index.html)
 
-This respository contains the code for the paper [AVID: <ins>A</ins>ny-Length <ins>V</ins>ideo <ins>I</ins>npainting with <ins>D</ins>iffusion Model](https://arxiv.org/pdf/2312.03816.pdf).
+This respository contains the code for the CVPR 2024 paper [AVID: <ins>A</ins>ny-Length <ins>V</ins>ideo <ins>I</ins>npainting with <ins>D</ins>iffusion Model](https://arxiv.org/pdf/2312.03816.pdf).
 For more visualization results, please check our [supplementary materils](https://zhang-zx.github.io/AVID/supp/index.html).
 
 > **[AVID: <ins>A</ins>ny-Length <ins>V</ins>ideo <ins>I</ins>npainting with <ins>D</ins>iffusion Model](https://arxiv.org/abs/2312.03816)** \
